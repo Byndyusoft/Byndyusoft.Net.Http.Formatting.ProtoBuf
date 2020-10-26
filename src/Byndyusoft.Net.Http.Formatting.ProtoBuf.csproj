@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>System.Net.Http</RootNamespace>
+    <PackageVersion>0.1.0</PackageVersion>
+    <PackageId>Byndyusoft.Net.Http.Formatting.ProtoBuf</PackageId>
+    <Title>Byndyusoft.Net.Http.Formatting.ProtoBuf</Title>
+    <Authors>Byndyusoft</Authors>
+    <Description>This package adds support for ProtoBuf formatting and content negotiation to System.Net.Http</Description>
+    <PackageTags>Byndyusoft;ProtoBuf;HttpClient;WebApi;AspNet</PackageTags>
+    <RepositoryUrl>https://github.com/Byndyusoft/Byndyusoft.Net.Http.Formatting.ProtoBuf</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
+    <PackageReference Include="protobuf-net" Version="3.0.52" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+</Project>

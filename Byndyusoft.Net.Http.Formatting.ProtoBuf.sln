@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30611.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BC8C66EA-14C3-4BE4-860A-2494ACAD83CE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Byndyusoft.Net.Http.Formatting.ProtoBuf", "src\Byndyusoft.Net.Http.Formatting.ProtoBuf.csproj", "{5658CAAE-7269-4736-8CE7-84D822D7DBDD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F9DA3C69-392D-4287-8101-7EE680A79D69}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Byndyusoft.Net.Http.Formatting.ProtoBuf.Tests", "tests\Byndyusoft.Net.Http.Formatting.ProtoBuf.Tests.csproj", "{A1483999-8DBB-4704-8460-4DBD5211D726}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "example", "example", "{260CE385-70EA-4604-8E50-D3E7A89BF82B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Byndyusoft.Net.Http.Formatting.ProtoBuf.Example", "example\Byndyusoft.Net.Http.Formatting.ProtoBuf.Example.csproj", "{5242E5A4-7831-4D2A-840A-E377302321D9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{088633F9-34E2-44CC-8E52-4F7C4DB2BD55}"
+	ProjectSection(SolutionItems) = preProject
+		CONTRIBUTING.md = CONTRIBUTING.md
+		LICENSE.txt = LICENSE.txt
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5658CAAE-7269-4736-8CE7-84D822D7DBDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5658CAAE-7269-4736-8CE7-84D822D7DBDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5658CAAE-7269-4736-8CE7-84D822D7DBDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5658CAAE-7269-4736-8CE7-84D822D7DBDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1483999-8DBB-4704-8460-4DBD5211D726}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1483999-8DBB-4704-8460-4DBD5211D726}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1483999-8DBB-4704-8460-4DBD5211D726}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1483999-8DBB-4704-8460-4DBD5211D726}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5242E5A4-7831-4D2A-840A-E377302321D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5242E5A4-7831-4D2A-840A-E377302321D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5242E5A4-7831-4D2A-840A-E377302321D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5242E5A4-7831-4D2A-840A-E377302321D9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5658CAAE-7269-4736-8CE7-84D822D7DBDD} = {BC8C66EA-14C3-4BE4-860A-2494ACAD83CE}
+		{A1483999-8DBB-4704-8460-4DBD5211D726} = {F9DA3C69-392D-4287-8101-7EE680A79D69}
+		{5242E5A4-7831-4D2A-840A-E377302321D9} = {260CE385-70EA-4604-8E50-D3E7A89BF82B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {33040450-FA69-488E-830C-0E2965FF2A44}
+	EndGlobalSection
+EndGlobal
