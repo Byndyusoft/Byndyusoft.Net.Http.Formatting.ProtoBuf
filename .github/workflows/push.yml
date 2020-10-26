@@ -1,12 +1,11 @@
-name: test workflow
+name: push
 
 on:
   - push
-  - pull_request
 
 jobs:
-  test:
-    name: test
+  push:
+    name: push
 
     strategy:
       matrix:
