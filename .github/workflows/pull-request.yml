@@ -15,23 +15,9 @@ jobs:
     env:
       DOTNET_NOLOGO: true
     steps:
-      - name: info
-        run: echo 'PR ${{ github.head_ref }} -> ${{ github.base_ref }}'
-      - name: checkout source branch 
+      - name: checkout
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }} 
-      - name: checkout target branch 
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.base_ref }}
-        
-      - name: merge pull request
-        run: |
-            git config user.email "github@byndyusoft.com"
-            git config user.name "github"
-            git merge ${{ github.event.pull_request.head.sha }} --no-commit --allow-unrelated-histories
-        
+
       - name: install dotnet
         uses: actions/setup-dotnet@v1
         with:
