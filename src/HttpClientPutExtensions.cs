@@ -1,24 +1,23 @@
-﻿namespace System.Net.Http
-{
-    using System;
-    using ComponentModel;
-    using Formatting;
-    using ProtoBuf.Meta;
-    using Threading;
-    using Threading.Tasks;
+﻿using System.ComponentModel;
+using System.Net.Http.Formatting;
+using System.Threading;
+using System.Threading.Tasks;
+using ProtoBuf.Meta;
 
+namespace System.Net.Http
+{
     /// <summary>
-    /// Extension methods that aid in making formatted PUT requests using <see cref="HttpClient" />.
+    ///     Extension methods that aid in making formatted PUT requests using <see cref="HttpClient" />.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class HttpClientPutExtensions
     {
         /// <summary>
-        /// Sends a Put request as an asynchronous operation to the specified Uri with the given <paramref name="value" /> serialized
-        /// as ProtoBuf.
+        ///     Sends a Put request as an asynchronous operation to the specified Uri with the given <paramref name="value" />
+        ///     serialized as ProtoBuf.
         /// </summary>
         /// <remarks>
-        /// This method uses a default instance of <see cref="ProtoBufMediaTypeFormatter" />.
+        ///     This method uses a default instance of <see cref="ProtoBufMediaTypeFormatter" />.
         /// </remarks>
         /// <typeparam name="T">The type of <paramref name="client" />.</typeparam>
         /// <param name="client">The client used to make the request.</param>
@@ -34,11 +33,11 @@
         }
 
         /// <summary>
-        /// Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value" /> serialized
-        /// as ProtoBuf.
+        ///     Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value" />
+        ///     serialized as ProtoBuf.
         /// </summary>
         /// <remarks>
-        /// This method uses a default instance of <see cref="ProtoBufMediaTypeFormatter" />.
+        ///     This method uses a default instance of <see cref="ProtoBufMediaTypeFormatter" />.
         /// </remarks>
         /// <typeparam name="T">The type of <paramref name="client" />.</typeparam>
         /// <param name="client">The client used to make the request.</param>
@@ -56,11 +55,11 @@
         }
 
         /// <summary>
-        /// Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value" /> serialized
-        /// as ProtoBuf.
+        ///     Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value" />
+        ///     serialized as ProtoBuf.
         /// </summary>
         /// <remarks>
-        /// This method uses a default instance of <see cref="ProtoBufMediaTypeFormatter" />.
+        ///     This method uses a default instance of <see cref="ProtoBufMediaTypeFormatter" />.
         /// </remarks>
         /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
         /// <param name="client">The client used to make the request.</param>
@@ -78,11 +77,11 @@
         }
 
         /// <summary>
-        /// Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value" /> serialized
-        /// as ProtoBuf.
+        ///     Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value" />
+        ///     serialized as ProtoBuf.
         /// </summary>
         /// <remarks>
-        /// This method uses a default instance of <see cref="ProtoBufMediaTypeFormatter" />.
+        ///     This method uses a default instance of <see cref="ProtoBufMediaTypeFormatter" />.
         /// </remarks>
         /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
         /// <param name="client">The client used to make the request.</param>
@@ -104,11 +103,11 @@
         }
 
         /// <summary>
-        /// Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value" /> serialized
-        /// as ProtoBuf.
+        ///     Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value" />
+        ///     serialized as ProtoBuf.
         /// </summary>
         /// <remarks>
-        /// This method uses a default instance of <see cref="ProtoBufMediaTypeFormatter" />.
+        ///     This method uses a default instance of <see cref="ProtoBufMediaTypeFormatter" />.
         /// </remarks>
         /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
         /// <param name="client">The client used to make the request.</param>
@@ -124,11 +123,11 @@
         }
 
         /// <summary>
-        /// Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value" /> serialized
-        /// as ProtoBuf.
+        ///     Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value" />
+        ///     serialized as ProtoBuf.
         /// </summary>
         /// <remarks>
-        /// This method uses a default instance of <see cref="ProtoBufMediaTypeFormatter" />.
+        ///     This method uses a default instance of <see cref="ProtoBufMediaTypeFormatter" />.
         /// </remarks>
         /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
         /// <param name="client">The client used to make the request.</param>
@@ -146,11 +145,11 @@
         }
 
         /// <summary>
-        /// Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value" /> serialized
-        /// as ProtoBuf.
+        ///     Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value" />
+        ///     serialized as ProtoBuf.
         /// </summary>
         /// <remarks>
-        /// This method uses a default instance of <see cref="ProtoBufMediaTypeFormatter" />.
+        ///     This method uses a default instance of <see cref="ProtoBufMediaTypeFormatter" />.
         /// </remarks>
         /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
         /// <param name="client">The client used to make the request.</param>
@@ -168,11 +167,11 @@
         }
 
         /// <summary>
-        /// Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value" /> serialized
-        /// as ProtoBuf.
+        ///     Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value" />
+        ///     serialized as ProtoBuf.
         /// </summary>
         /// <remarks>
-        /// This method uses a default instance of <see cref="ProtoBufMediaTypeFormatter" />.
+        ///     This method uses a default instance of <see cref="ProtoBufMediaTypeFormatter" />.
         /// </remarks>
         /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
         /// <param name="client">The client used to make the request.</param>

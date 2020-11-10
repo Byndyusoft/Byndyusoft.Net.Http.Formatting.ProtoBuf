@@ -1,22 +1,16 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Byndyusoft.Net.Http.Formatting.ProtoBuf
 {
-    using Formaters;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.Extensions.DependencyInjection;
-
     public class Startup
     {
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
 
-            services.AddMvcCore(
-                options =>
-                {
-                    options.EnableEndpointRouting = true;
-                    options.OutputFormatters.Add(new ProtoBufOutputFormatter());
-                    options.InputFormatters.Add(new ProtoBufInputFormatter());
-                });
+            services.AddMvcCore()
+                .AddProtoBufNet();
         }
 
         public void Configure(IApplicationBuilder app)

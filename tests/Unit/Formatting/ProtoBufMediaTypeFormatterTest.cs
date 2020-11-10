@@ -1,43 +1,25 @@
-﻿namespace System.Net.Http.Formatting
-{
-    using Collections.Generic;
-    using IO;
-    using Linq;
-    using Models;
-    using ProtoBuf.Meta;
-    using Threading.Tasks;
-    using Xunit;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Http.Formatting;
+using System.Net.Http.Tests.Models;
+using System.Threading.Tasks;
+using ProtoBuf.Meta;
+using Xunit;
 
+namespace System.Net.Http.Tests.Unit.Formatting
+{
     public class ProtoBufMediaTypeFormatterTest
     {
-        private interface IInterface
-        {
-        }
-
-        private abstract class AbstractClass
-        {
-        }
-
-        private class NonPublicClass
-        {
-        }
-
-        private readonly ProtoBufMediaTypeFormatter _formatter = new ProtoBufMediaTypeFormatter();
-        private readonly TransportContext _context = null;
-        private readonly IFormatterLogger _logger = null;
         private readonly HttpContent _content;
+        private readonly TransportContext _context = null;
+        private readonly ProtoBufMediaTypeFormatter _formatter;
+        private readonly IFormatterLogger _logger = null;
 
         public ProtoBufMediaTypeFormatterTest()
         {
-            _content = new StreamContent(new MemoryStream());
-        }
-
-        [Fact]
-        public void DefaultMediaType_ReturnsApplicationProtoBuf()
-        {
-            var mediaType = ProtoBufMediaTypeFormatter.DefaultMediaType;
-            Assert.NotNull(mediaType);
-            Assert.Equal("application/protobuf", mediaType.MediaType);
+            _formatter = new ProtoBufMediaTypeFormatter();
+            _content = new StreamContent(Stream.Null);
         }
 
         [Fact]
@@ -162,9 +144,10 @@
             // Arrange
             var expectedInt = 10;
             var stream = WriteModel(expectedInt);
+            var content = new StreamContent(stream);
 
             // Act
-            var result = await _formatter.ReadFromStreamAsync(typeof(int), stream, _content, _logger);
+            var result = await _formatter.ReadFromStreamAsync(typeof(int), stream, content, _logger);
 
             // Assert
             Assert.Equal(expectedInt, result);
@@ -175,18 +158,19 @@
         {
             // Arrange
             var input = new SimpleType
-                        {
-                            Property = 10,
-                            Enum = SeekOrigin.Current,
-                            Field = "string",
-                            Array = new[] {1, 2},
-                            Nullable = 100
-                        };
+            {
+                Property = 10,
+                Enum = SeekOrigin.Current,
+                Field = "string",
+                Array = new[] {1, 2},
+                Nullable = 100
+            };
 
             var stream = WriteModel(input);
+            var content = new StreamContent(stream);
 
             // Act
-            var result = await _formatter.ReadFromStreamAsync(typeof(SimpleType), stream, _content, _logger);
+            var result = await _formatter.ReadFromStreamAsync(typeof(SimpleType), stream, content, _logger);
 
             // Assert
             Assert.NotNull(result);
@@ -204,11 +188,11 @@
         {
             // Arrange
             var input = new ComplexType {Inner = new SimpleType {Property = 10}};
-
             var stream = WriteModel(input);
+            var content = new StreamContent(stream);
 
             // Act
-            var result = await _formatter.ReadFromStreamAsync(typeof(ComplexType), stream, _content, _logger);
+            var result = await _formatter.ReadFromStreamAsync(typeof(ComplexType), stream, content, _logger);
 
             // Assert
             Assert.NotNull(result);
@@ -278,13 +262,13 @@
         {
             // Arrange
             var input = new SimpleType
-                        {
-                            Property = 10,
-                            Enum = SeekOrigin.Current,
-                            Field = "string",
-                            Array = new[] {1, 2},
-                            Nullable = 100
-                        };
+            {
+                Property = 10,
+                Enum = SeekOrigin.Current,
+                Field = "string",
+                Array = new[] {1, 2},
+                Nullable = 100
+            };
 
             var stream = new MemoryStream();
 
@@ -317,7 +301,6 @@
 
         private T ReadModel<T>(Stream stream)
         {
-
             if (stream.Length == 0)
                 return default;
 
@@ -328,13 +311,22 @@
         private Stream WriteModel<T>(T value)
         {
             var stream = new MemoryStream();
-            if (value != null)
-            {
-                _formatter.Model.Serialize<T>(stream, value);
-            }
+            if (value != null) _formatter.Model.Serialize(stream, value);
 
             stream.Position = 0;
             return stream;
+        }
+
+        private interface IInterface
+        {
+        }
+
+        private abstract class AbstractClass
+        {
+        }
+
+        private class NonPublicClass
+        {
         }
     }
 }

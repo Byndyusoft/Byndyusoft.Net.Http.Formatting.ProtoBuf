@@ -1,15 +1,16 @@
+using System;
+using System.Net.Http;
+using System.Net.Http.Formatting;
+using System.Net.Http.Formatting.Protobuf;
+using System.Threading;
+using System.Threading.Tasks;
+using Byndyusoft.Net.Http.Formatting.ProtoBuf.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
+
 namespace Byndyusoft.Net.Http.Formatting.ProtoBuf
 {
-    using System;
-    using System.Net.Http;
-    using System.Net.Http.Formatting;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.Hosting;
-    using Models;
-    using Newtonsoft.Json;
-
     public static class Program
     {
         public static async Task Main(string[] args)
@@ -21,13 +22,15 @@ namespace Byndyusoft.Net.Http.Formatting.ProtoBuf
             cts.Cancel();
         }
 
-        private static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        private static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
-                                          {
-                                              webBuilder.UseStartup<Startup>();
-                                              webBuilder.UseUrls("http://localhost:8080");
-                                          });
+                {
+                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls("http://localhost:8080");
+                });
+        }
 
         private static async Task MakeCallsAsync()
         {
@@ -39,7 +42,7 @@ namespace Byndyusoft.Net.Http.Formatting.ProtoBuf
             };
 
             var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Accept.Add(ProtoBufMediaTypeFormatter.DefaultMediaType);
+            httpClient.DefaultRequestHeaders.Accept.Add(ProtoBufConstants.DefaultMediaTypeHeader);
 
             var post = await httpClient.PostAsProtoBufAsync("http://localhost:8080/peoples", people);
             post.EnsureSuccessStatusCode();
@@ -51,7 +54,7 @@ namespace Byndyusoft.Net.Http.Formatting.ProtoBuf
                 new ProtoBufMediaTypeFormatter()
             });
 
-            Console.WriteLine($"Received {JsonConvert.SerializeObject(data, Formatting.Indented)}");
+            Console.WriteLine($"Received {JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.Indented)}");
         }
     }
 }

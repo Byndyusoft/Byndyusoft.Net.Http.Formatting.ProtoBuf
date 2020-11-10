@@ -1,9 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>Byndyusoft.Net.Http.Formatting.ProtoBuf</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="protobuf-net.AspNetCore" Version="3.0.52" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\src\Byndyusoft.Net.Http.Formatting.ProtoBuf.csproj" />

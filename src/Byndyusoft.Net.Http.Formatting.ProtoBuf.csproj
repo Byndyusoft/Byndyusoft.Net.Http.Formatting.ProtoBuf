@@ -11,11 +11,17 @@
     <PackageTags>Byndyusoft;ProtoBuf;HttpClient;WebApi;AspNet</PackageTags>
     <RepositoryUrl>https://github.com/Byndyusoft/Byndyusoft.Net.Http.Formatting.ProtoBuf</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="protobuf-net" Version="3.0.52" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\icon.png" Pack="true" PackagePath="icon.jpg" />
   </ItemGroup>
 
   <ItemGroup>
