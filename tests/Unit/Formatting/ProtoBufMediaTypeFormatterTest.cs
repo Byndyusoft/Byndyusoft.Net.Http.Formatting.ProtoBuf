@@ -11,7 +11,39 @@ namespace System.Net.Http.Tests.Unit.Formatting
 {
     public class ProtoBufMediaTypeFormatterTest
     {
-        private readonly HttpContent _content;
+        private class ProtoBufHttpContent : StreamContent
+        {
+            public ProtoBufHttpContent(TypeModel model) : this(new MemoryStream())
+            {
+                Model = model;
+            }
+
+            private ProtoBufHttpContent(MemoryStream stream)
+                : base(stream)
+            {
+                Stream = stream;
+            }
+
+            public MemoryStream Stream { get; }
+            public TypeModel Model { get; }
+
+            public void WriteObject<T>(T value)
+            {
+                if (value != null) Model.Serialize(Stream, value);
+                Stream.Position = 0;
+            }
+
+            public T ReadObject<T>()
+            {
+                if (Stream.Length == 0)
+                    return default;
+
+                Stream.Position = 0;
+                return Model.Deserialize<T>(Stream);
+            }
+        }
+
+        private readonly ProtoBufHttpContent _content;
         private readonly TransportContext _context = null;
         private readonly ProtoBufMediaTypeFormatter _formatter;
         private readonly IFormatterLogger _logger = null;
@@ -19,7 +51,7 @@ namespace System.Net.Http.Tests.Unit.Formatting
         public ProtoBufMediaTypeFormatterTest()
         {
             _formatter = new ProtoBufMediaTypeFormatter();
-            _content = new StreamContent(Stream.Null);
+            _content = new ProtoBufHttpContent(_formatter.Model);
         }
 
         [Fact]
@@ -101,13 +133,10 @@ namespace System.Net.Http.Tests.Unit.Formatting
         [Fact]
         public async Task ReadFromStreamAsync_WhenTypeIsNull_ThrowsException()
         {
-            // Assert
-            var stream = new MemoryStream();
-
             // Act
             var exception =
                 await Assert.ThrowsAsync<ArgumentNullException>(
-                    () => _formatter.ReadFromStreamAsync(null, stream, _content, _logger));
+                    () => _formatter.ReadFromStreamAsync(null, _content.Stream, _content, _logger));
 
             // Assert
             Assert.Equal("type", exception.ParamName);
@@ -129,10 +158,10 @@ namespace System.Net.Http.Tests.Unit.Formatting
         public async Task ReadFromStreamAsync_ReadsNullObject()
         {
             // Assert
-            var stream = WriteModel<object>(null);
+            _content.WriteObject<object>(null);
 
             // Act
-            var result = await _formatter.ReadFromStreamAsync(typeof(object), stream, _content, _logger);
+            var result = await _formatter.ReadFromStreamAsync(typeof(object), _content.Stream, _content, _logger);
 
             // Assert
             Assert.Null(result);
@@ -143,11 +172,10 @@ namespace System.Net.Http.Tests.Unit.Formatting
         {
             // Arrange
             var expectedInt = 10;
-            var stream = WriteModel(expectedInt);
-            var content = new StreamContent(stream);
+            _content.WriteObject(expectedInt);
 
             // Act
-            var result = await _formatter.ReadFromStreamAsync(typeof(int), stream, content, _logger);
+            var result = await _formatter.ReadFromStreamAsync(typeof(int), _content.Stream, _content, _logger);
 
             // Assert
             Assert.Equal(expectedInt, result);
@@ -166,11 +194,10 @@ namespace System.Net.Http.Tests.Unit.Formatting
                 Nullable = 100
             };
 
-            var stream = WriteModel(input);
-            var content = new StreamContent(stream);
+            _content.WriteObject(input);
 
             // Act
-            var result = await _formatter.ReadFromStreamAsync(typeof(SimpleType), stream, content, _logger);
+            var result = await _formatter.ReadFromStreamAsync(typeof(SimpleType), _content.Stream, _content, _logger);
 
             // Assert
             Assert.NotNull(result);
@@ -188,11 +215,10 @@ namespace System.Net.Http.Tests.Unit.Formatting
         {
             // Arrange
             var input = new ComplexType {Inner = new SimpleType {Property = 10}};
-            var stream = WriteModel(input);
-            var content = new StreamContent(stream);
+            _content.WriteObject(input);
 
             // Act
-            var result = await _formatter.ReadFromStreamAsync(typeof(ComplexType), stream, content, _logger);
+            var result = await _formatter.ReadFromStreamAsync(typeof(ComplexType), _content.Stream, _content, _logger);
 
             // Assert
             Assert.NotNull(result);
@@ -204,20 +230,17 @@ namespace System.Net.Http.Tests.Unit.Formatting
         [Fact]
         public async Task WriteToStreamAsync_WhenTypeIsNull_ThrowsException()
         {
-            // Assert
-            var stream = new MemoryStream();
-
             // Act
             var exception =
                 await Assert.ThrowsAsync<ArgumentNullException>(
-                    () => _formatter.WriteToStreamAsync(null, new object(), stream, _content, _context));
+                    () => _formatter.WriteToStreamAsync(null, new object(), _content.Stream, _content, _context));
 
             // Assert
             Assert.Equal("type", exception.ParamName);
         }
 
         [Fact]
-        public async Task WriteToStreamAsync__WhenStreamIsNull_ThrowsException()
+        public async Task WriteToStreamAsync_WhenStreamIsNull_ThrowsException()
         {
             // Act
             var exception =
@@ -231,15 +254,13 @@ namespace System.Net.Http.Tests.Unit.Formatting
         [Fact]
         public async Task WriteToStreamAsync_WritesNullObject()
         {
-            // Assert
-            var stream = new MemoryStream();
-
             // Act
-            await _formatter.WriteToStreamAsync(typeof(object), null, stream, _content, _context);
+            await _formatter.WriteToStreamAsync(typeof(object), null, _content.Stream, _content, _context);
 
             // Assert
-            var result = ReadModel<object>(stream);
+            var result = _content.ReadObject<object>();
             Assert.Null(result);
+            Assert.Equal(0, _content.Headers.ContentLength);
         }
 
         [Fact]
@@ -247,14 +268,14 @@ namespace System.Net.Http.Tests.Unit.Formatting
         {
             // Arrange
             var expectedInt = 10;
-            var stream = new MemoryStream();
 
             // Act
-            await _formatter.WriteToStreamAsync(typeof(int), expectedInt, stream, _content, _context);
+            await _formatter.WriteToStreamAsync(typeof(int), expectedInt, _content.Stream, _content, _context);
 
             // Assert
-            var result = ReadModel<int>(stream);
+            var result = _content.ReadObject<int>();
             Assert.Equal(expectedInt, result);
+            Assert.NotEqual(0, _content.Headers.ContentLength);
         }
 
         [Fact]
@@ -270,13 +291,12 @@ namespace System.Net.Http.Tests.Unit.Formatting
                 Nullable = 100
             };
 
-            var stream = new MemoryStream();
-
             // Act
-            await _formatter.WriteToStreamAsync(typeof(SimpleType), input, stream, _content, _context);
+            await _formatter.WriteToStreamAsync(typeof(SimpleType), input, _content.Stream, _content, _context);
 
             // Assert
-            var result = ReadModel<SimpleType>(stream);
+            var result = _content.ReadObject<SimpleType>();
+            Assert.NotEqual(0, _content.Headers.ContentLength);
             Assert.Equal(input.Property, result.Property);
             Assert.Equal(input.Field, result.Field);
             Assert.Equal(input.Enum, result.Enum);
@@ -289,32 +309,14 @@ namespace System.Net.Http.Tests.Unit.Formatting
         {
             // Arrange
             var input = new ComplexType {Inner = new SimpleType {Property = 10}};
-            var stream = new MemoryStream();
 
             // Act
-            await _formatter.WriteToStreamAsync(typeof(ComplexType), input, stream, _content, _context);
+            await _formatter.WriteToStreamAsync(typeof(ComplexType), input, _content.Stream, _content, _context);
 
             // Assert
-            var result = ReadModel<ComplexType>(stream);
+            var result = _content.ReadObject<ComplexType>();
+            Assert.NotEqual(0, _content.Headers.ContentLength);
             Assert.Equal(input.Inner.Property, result.Inner.Property);
-        }
-
-        private T ReadModel<T>(Stream stream)
-        {
-            if (stream.Length == 0)
-                return default;
-
-            stream.Position = 0;
-            return _formatter.Model.Deserialize<T>(stream);
-        }
-
-        private Stream WriteModel<T>(T value)
-        {
-            var stream = new MemoryStream();
-            if (value != null) _formatter.Model.Serialize(stream, value);
-
-            stream.Position = 0;
-            return stream;
         }
 
         private interface IInterface

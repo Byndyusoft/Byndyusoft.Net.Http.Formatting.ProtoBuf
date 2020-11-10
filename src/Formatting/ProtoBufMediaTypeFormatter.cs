@@ -68,9 +68,18 @@ namespace System.Net.Http.Formatting
             if (type is null) throw new ArgumentNullException(nameof(type));
             if (writeStream is null) throw new ArgumentNullException(nameof(writeStream));
 
-            if (value is null) return Task.CompletedTask;
+            if (value is null)
+            {
+                content.Headers.ContentLength = 0;
+                return Task.CompletedTask;
+            }
 
-            Model.Serialize(writeStream, value);
+            using (var measureState = Model.Measure(value))
+            {
+                measureState.Serialize(writeStream);
+                content.Headers.ContentLength = measureState.Length;
+            }
+
             return Task.CompletedTask;
         }
 
