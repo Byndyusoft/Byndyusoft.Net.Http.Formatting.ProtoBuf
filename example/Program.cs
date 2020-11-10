@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Byndyusoft.Net.Http.Formatting.ProtoBuf.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Byndyusoft.Net.Http.Formatting.ProtoBuf
@@ -25,6 +26,7 @@ namespace Byndyusoft.Net.Http.Formatting.ProtoBuf
         private static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
+                .ConfigureLogging(log => log.SetMinimumLevel(LogLevel.Error))
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
