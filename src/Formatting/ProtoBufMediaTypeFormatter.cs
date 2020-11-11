@@ -39,7 +39,7 @@ namespace System.Net.Http.Formatting
         }
 
         /// <summary>
-        ///     >Provides protobuf serialization support for a number of types.
+        ///     Provides protobuf serialization support for a number of types.
         /// </summary>
         public TypeModel Model { get; }
 
