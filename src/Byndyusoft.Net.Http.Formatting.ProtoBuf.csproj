@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>System.Net.Http</RootNamespace>
-    <PackageVersion>0.1.0</PackageVersion>
+    <Version>0.1.0</Version>
     <PackageId>Byndyusoft.Net.Http.Formatting.ProtoBuf</PackageId>
     <Title>Byndyusoft.Net.Http.Formatting.ProtoBuf</Title>
     <Authors>Byndyusoft</Authors>
