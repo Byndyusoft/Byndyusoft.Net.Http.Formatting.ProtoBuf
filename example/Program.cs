@@ -1,7 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Net.Http.Formatting;
-using System.Net.Http.Formatting.Protobuf;
+using System.Net.Http.ProtoBuf;
 using System.Threading;
 using System.Threading.Tasks;
 using Byndyusoft.Net.Http.Formatting.ProtoBuf.Models;
@@ -44,7 +44,7 @@ namespace Byndyusoft.Net.Http.Formatting.ProtoBuf
             };
 
             var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Accept.Add(ProtoBufConstants.DefaultMediaTypeHeader);
+            httpClient.DefaultRequestHeaders.Accept.Add(ProtoBufDefaults.MediaTypeHeader);
 
             var post = await httpClient.PostAsProtoBufAsync("http://localhost:8080/peoples", people);
             post.EnsureSuccessStatusCode();

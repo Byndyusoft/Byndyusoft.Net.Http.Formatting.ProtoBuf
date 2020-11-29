@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace System.Net.Http.Tests.Functional
+namespace System.Net.Http.Formatting.Functional
 {
     public abstract class MvcTestFixture : IDisposable
     {

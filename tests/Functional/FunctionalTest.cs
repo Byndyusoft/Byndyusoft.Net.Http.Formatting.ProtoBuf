@@ -1,31 +1,30 @@
 ﻿using System.IO;
-using System.Net.Http.Formatting;
-using System.Net.Http.Formatting.Protobuf;
-using System.Net.Http.Tests.Models;
+using System.Net.Http.Formatting.Models;
+using System.Net.Http.ProtoBuf;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace System.Net.Http.Tests.Functional
+namespace System.Net.Http.Formatting.Functional
 {
-    public class ProtoBufMediaTypeFormatterFunctionalTest : MvcTestFixture
+    public class FunctionalTest : MvcTestFixture
     {
         private readonly ProtoBufMediaTypeFormatter _formatter;
 
-        public ProtoBufMediaTypeFormatterFunctionalTest()
+        public FunctionalTest()
         {
             _formatter = new ProtoBufMediaTypeFormatter();
         }
 
         protected override void ConfigureHttpClient(HttpClient client)
         {
-            client.DefaultRequestHeaders.Accept.Add(ProtoBufConstants.DefaultMediaTypeHeader);
+            client.DefaultRequestHeaders.Accept.Add(ProtoBufDefaults.MediaTypeHeader);
         }
 
         protected override void ConfigureMvc(IMvcCoreBuilder builder)
         {
             builder.AddProtoBufNet(
-                options => { options.Model = ProtoBufConstants.DefaultTypeModel; });
+                options => { options.Model = ProtoBufDefaults.TypeModel; });
         }
 
         [Fact]
