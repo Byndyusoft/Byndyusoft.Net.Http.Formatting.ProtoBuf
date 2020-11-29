@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using System.Net.Http.Formatting.Protobuf;
+using System.Net.Http.ProtoBuf;
 using System.Threading.Tasks;
 using ProtoBuf.Meta;
 
@@ -13,7 +13,7 @@ namespace System.Net.Http.Formatting
         /// <summary>
         ///     Initializes a new instance of the <see cref="ProtoBufMediaTypeFormatter" /> class.
         /// </summary>
-        public ProtoBufMediaTypeFormatter() : this(ProtoBufConstants.DefaultTypeModel)
+        public ProtoBufMediaTypeFormatter() : this(ProtoBufDefaults.TypeModel)
         {
         }
 
@@ -34,8 +34,8 @@ namespace System.Net.Http.Formatting
         public ProtoBufMediaTypeFormatter(TypeModel model)
         {
             Model = model ?? throw new ArgumentNullException(nameof(model));
-            SupportedMediaTypes.Add(ProtoBufConstants.MediaTypeHeaders.ApplicationProtoBuf);
-            SupportedMediaTypes.Add(ProtoBufConstants.MediaTypeHeaders.ApplicationXProtoBuf);
+            SupportedMediaTypes.Add(ProtoBufDefaults.MediaTypeHeaders.ApplicationProtoBuf);
+            SupportedMediaTypes.Add(ProtoBufDefaults.MediaTypeHeaders.ApplicationXProtoBuf);
         }
 
         /// <summary>

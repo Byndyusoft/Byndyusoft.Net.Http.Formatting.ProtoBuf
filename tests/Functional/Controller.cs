@@ -1,7 +1,7 @@
-﻿using System.Net.Http.Tests.Models;
+﻿using System.Net.Http.Formatting.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace System.Net.Http.Tests.Functional
+namespace System.Net.Http.Formatting.Functional
 {
     [Controller]
     [Route("protobuf-formatter")]

@@ -1,48 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Formatting;
-using System.Net.Http.Tests.Models;
+using System.Net.Http.Formatting.Models;
 using System.Threading.Tasks;
 using ProtoBuf.Meta;
 using Xunit;
 
-namespace System.Net.Http.Tests.Unit.Formatting
+namespace System.Net.Http.Formatting.Unit
 {
     public class ProtoBufMediaTypeFormatterTest
     {
-        private class ProtoBufHttpContent : StreamContent
-        {
-            public ProtoBufHttpContent(TypeModel model) : this(new MemoryStream())
-            {
-                Model = model;
-            }
-
-            private ProtoBufHttpContent(MemoryStream stream)
-                : base(stream)
-            {
-                Stream = stream;
-            }
-
-            public MemoryStream Stream { get; }
-            public TypeModel Model { get; }
-
-            public void WriteObject<T>(T value)
-            {
-                if (value != null) Model.Serialize(Stream, value);
-                Stream.Position = 0;
-            }
-
-            public T ReadObject<T>()
-            {
-                if (Stream.Length == 0)
-                    return default;
-
-                Stream.Position = 0;
-                return Model.Deserialize<T>(Stream);
-            }
-        }
-
         private readonly ProtoBufHttpContent _content;
         private readonly TransportContext _context = null;
         private readonly ProtoBufMediaTypeFormatter _formatter;
@@ -62,16 +29,6 @@ namespace System.Net.Http.Tests.Unit.Formatting
 
             // Assert
             Assert.NotNull(formatter.Model);
-        }
-
-        [Fact]
-        public void CopyConstructor()
-        {
-            // Act
-            var copy = new ProtoBufMediaTypeFormatter(_formatter);
-
-            // Assert
-            Assert.Same(_formatter.Model, copy.Model);
         }
 
         [Fact]
@@ -185,14 +142,7 @@ namespace System.Net.Http.Tests.Unit.Formatting
         public async Task ReadFromStreamAsync_ReadsSimpleTypes()
         {
             // Arrange
-            var input = new SimpleType
-            {
-                Property = 10,
-                Enum = SeekOrigin.Current,
-                Field = "string",
-                Array = new[] {1, 2},
-                Nullable = 100
-            };
+            var input = SimpleType.Create();
 
             _content.WriteObject(input);
 
@@ -202,19 +152,14 @@ namespace System.Net.Http.Tests.Unit.Formatting
             // Assert
             Assert.NotNull(result);
             var model = Assert.IsType<SimpleType>(result);
-
-            Assert.Equal(input.Property, model.Property);
-            Assert.Equal(input.Field, model.Field);
-            Assert.Equal(input.Enum, model.Enum);
-            Assert.Equal(input.Array, model.Array);
-            Assert.Equal(input.Nullable, model.Nullable);
+            model.Verify();
         }
 
         [Fact]
         public async Task ReadFromStreamAsync_ReadsComplexTypes()
         {
             // Arrange
-            var input = new ComplexType {Inner = new SimpleType {Property = 10}};
+            var input = ComplexType.Create();
             _content.WriteObject(input);
 
             // Act
@@ -223,7 +168,7 @@ namespace System.Net.Http.Tests.Unit.Formatting
             // Assert
             Assert.NotNull(result);
             var model = Assert.IsType<ComplexType>(result);
-            Assert.Equal(input.Inner.Property, model.Inner.Property);
+            model.Verify();
         }
 
 
@@ -282,14 +227,7 @@ namespace System.Net.Http.Tests.Unit.Formatting
         public async Task WriteToStreamAsync_WritesSimplesType()
         {
             // Arrange
-            var input = new SimpleType
-            {
-                Property = 10,
-                Enum = SeekOrigin.Current,
-                Field = "string",
-                Array = new[] {1, 2},
-                Nullable = 100
-            };
+            var input = SimpleType.Create();
 
             // Act
             await _formatter.WriteToStreamAsync(typeof(SimpleType), input, _content.Stream, _content, _context);
@@ -297,18 +235,14 @@ namespace System.Net.Http.Tests.Unit.Formatting
             // Assert
             var result = _content.ReadObject<SimpleType>();
             Assert.NotEqual(0, _content.Headers.ContentLength);
-            Assert.Equal(input.Property, result.Property);
-            Assert.Equal(input.Field, result.Field);
-            Assert.Equal(input.Enum, result.Enum);
-            Assert.Equal(input.Array, result.Array);
-            Assert.Equal(input.Nullable, result.Nullable);
+            result.Verify();
         }
 
         [Fact]
         public async Task WriteToStreamAsync_WritesComplexType()
         {
             // Arrange
-            var input = new ComplexType {Inner = new SimpleType {Property = 10}};
+            var input = ComplexType.Create();
 
             // Act
             await _formatter.WriteToStreamAsync(typeof(ComplexType), input, _content.Stream, _content, _context);
@@ -316,7 +250,39 @@ namespace System.Net.Http.Tests.Unit.Formatting
             // Assert
             var result = _content.ReadObject<ComplexType>();
             Assert.NotEqual(0, _content.Headers.ContentLength);
-            Assert.Equal(input.Inner.Property, result.Inner.Property);
+            result.Verify();
+        }
+
+        private class ProtoBufHttpContent : StreamContent
+        {
+            public ProtoBufHttpContent(TypeModel model) : this(new MemoryStream())
+            {
+                Model = model;
+            }
+
+            private ProtoBufHttpContent(MemoryStream stream)
+                : base(stream)
+            {
+                Stream = stream;
+            }
+
+            public MemoryStream Stream { get; }
+            public TypeModel Model { get; }
+
+            public void WriteObject<T>(T value)
+            {
+                if (value != null) Model.Serialize(Stream, value);
+                Stream.Position = 0;
+            }
+
+            public T ReadObject<T>()
+            {
+                if (Stream.Length == 0)
+                    return default;
+
+                Stream.Position = 0;
+                return Model.Deserialize<T>(Stream);
+            }
         }
 
         private interface IInterface
