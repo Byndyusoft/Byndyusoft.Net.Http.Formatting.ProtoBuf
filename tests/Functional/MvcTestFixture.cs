@@ -61,7 +61,11 @@ namespace System.Net.Http.Formatting.Functional
         {
             services.AddLogging(c => c.ClearProviders());
             services.AddControllers();
-            ConfigureMvc(services.AddMvcCore());
+            ConfigureMvc(services.AddMvcCore(options =>
+            {
+                options.OutputFormatters.Clear();
+                options.InputFormatters.Clear();
+            }));
         }
 
         protected abstract void ConfigureMvc(IMvcCoreBuilder builder);
