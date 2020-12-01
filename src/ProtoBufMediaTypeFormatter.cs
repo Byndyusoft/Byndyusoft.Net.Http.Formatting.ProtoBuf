@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Net.Http.ProtoBuf;
+using System.Threading;
 using System.Threading.Tasks;
 using ProtoBuf.Meta;
 
@@ -8,6 +9,8 @@ namespace System.Net.Http.Formatting
     /// <summary>
     ///     <see cref="MediaTypeFormatter" /> class to handle ProtoBuf.
     /// </summary>
+    /// <see
+    ///     href="https://github.com/protobuf-net/protobuf-net/blob/main/src/protobuf-net.AspNetCore/Formatters/ProtoInputFormatter.cs" />
     public class ProtoBufMediaTypeFormatter : MediaTypeFormatter
     {
         /// <summary>
@@ -44,45 +47,43 @@ namespace System.Net.Http.Formatting
         public TypeModel Model { get; }
 
         /// <inheritdoc />
-        public override async Task<object> ReadFromStreamAsync(Type type, Stream readStream, HttpContent content,
+        public override Task<object> ReadFromStreamAsync(Type type, Stream readStream, HttpContent content,
             IFormatterLogger formatterLogger)
+        {
+            return ReadFromStreamAsync(type, readStream, content, formatterLogger, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public override async Task<object> ReadFromStreamAsync(Type type, Stream readStream, HttpContent content,
+            IFormatterLogger formatterLogger,
+            CancellationToken cancellationToken)
         {
             if (type is null) throw new ArgumentNullException(nameof(type));
             if (readStream is null) throw new ArgumentNullException(nameof(readStream));
+            if (content == null) throw new ArgumentNullException(nameof(content));
 
-            if (content.Headers.ContentLength != null)
-            {
-                if (content.Headers.ContentLength == 0)
-                    return null;
-
-                return await ReadDirectStreamAsync(type, readStream);
-            }
-
-            return await ReadBufferedStreamAsync(type, readStream);
+            return await content.ReadFromProtoBufAsync(type, Model, cancellationToken).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public override Task WriteToStreamAsync(Type type, object value, Stream writeStream, HttpContent content,
             TransportContext transportContext)
         {
-            if (type is null) throw new ArgumentNullException(nameof(type));
-            if (writeStream is null) throw new ArgumentNullException(nameof(writeStream));
-
-            if (value is null)
-            {
-                content.Headers.ContentLength = 0;
-                return Task.CompletedTask;
-            }
-
-            using (var measureState = Model.Measure(value))
-            {
-                measureState.Serialize(writeStream);
-                content.Headers.ContentLength = measureState.Length;
-            }
-
-            return Task.CompletedTask;
+            return WriteToStreamAsync(type, value, writeStream, content, transportContext, CancellationToken.None);
         }
 
+        /// <inheritdoc />
+        public override async Task WriteToStreamAsync(Type type, object value, Stream writeStream, HttpContent content,
+            TransportContext transportContext, CancellationToken cancellationToken)
+        {
+            if (type is null) throw new ArgumentNullException(nameof(type));
+            if (writeStream is null) throw new ArgumentNullException(nameof(writeStream));
+            if (content == null) throw new ArgumentNullException(nameof(content));
+
+            var protoBufContent = content as ProtoBufContent ?? ProtoBufContent.Create(value, type, Model);
+            await protoBufContent.CopyToAsync(writeStream).ConfigureAwait(false);
+            content.Headers.ContentLength = protoBufContent.Headers.ContentLength;
+        }
 
         /// <inheritdoc />
         public override bool CanReadType(Type type)
@@ -99,25 +100,6 @@ namespace System.Net.Http.Formatting
         private bool CanSerialize(Type type)
         {
             return Model.CanSerialize(type);
-        }
-
-        private Task<object> ReadDirectStreamAsync(Type type, Stream stream)
-        {
-            var model = Model.Deserialize(stream, null, type);
-            return Task.FromResult(model);
-        }
-
-        private async Task<object> ReadBufferedStreamAsync(Type type, Stream stream)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                await stream.CopyToAsync(memoryStream).ConfigureAwait(false);
-
-                if (memoryStream.Length == 0) return default;
-
-                memoryStream.Position = 0;
-                return Model.Deserialize(memoryStream, null, type);
-            }
         }
     }
 }
